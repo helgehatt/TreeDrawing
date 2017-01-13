@@ -63,10 +63,12 @@ let FloatMin = System.Double.MinValue
 let NodeToLine = -20.0
 let LineToNode = -40.0
 
+let pointToString (x,y) = String.concat "" [(string (x*10.0)); " "; (string y)]
+
 let drawNode (x,y) (Node((label,_),subtrees)) =
-    string (x,y-10.0) + " moveto" + nl +
+    pointToString (x,y-10.0) + " moveto" + nl +
     string (label) + " dup stringwidth pop 2 div neg 0 rmoveto show" + nl +
-    string (x,y-20.0) + " moveto" + nl,
+    pointToString (x,y-20.0) + " moveto" + nl,
     (x,y-20.0)
     
 let drawHorizontal (x,y) subtrees =
@@ -74,17 +76,17 @@ let drawHorizontal (x,y) subtrees =
         | [] ->  (mini, maxi)
         | Node((_, x), _)::es -> outliers (min x mini) (max x maxi) es
     let (min,max) = outliers FloatMax FloatMin subtrees    
-    string(min,y) + " moveto" + nl + 
-    string(max,y) + " lineto" + nl
+    pointToString(min,y) + " moveto" + nl + 
+    pointToString(max,y) + " lineto" + nl
 
 let drawVerticalFromNode (x,y) =
-    string(x,y+NodeToLine) + " lineto" + nl, 
+    pointToString(x,y+NodeToLine) + " lineto" + nl, 
     (x,y+NodeToLine)
 
 let rec drawVerticalFromLine (x,y) = function
     | [] -> ""
-    | Node((_,d),_)::es -> string(x+d,y) + " moveto" + nl + 
-                           string(x+d,y+LineToNode) + " lineto" + nl +
+    | Node((_,d),_)::es -> pointToString(x+d,y) + " moveto" + nl + 
+                           pointToString(x+d,y+LineToNode) + " lineto" + nl +
                            drawVerticalFromLine (x,y) es
                            
 
