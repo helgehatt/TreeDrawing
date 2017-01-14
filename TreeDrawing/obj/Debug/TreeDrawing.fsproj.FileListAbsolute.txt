@@ -1,0 +1,14 @@
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\TreeDrawing.XML
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\TreeDrawing.dll
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\TreeDrawing.pdb
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\FSharp.Core.dll
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\FSharp.Core.xml
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\obj\Debug\TreeDrawing.dll
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\obj\Debug\TreeDrawing.pdb
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\GuardedCommands.dll
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\FsLexYacc.Runtime.dll
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\Machine.dll
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\VirtualMachine.dll
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\GuardedCommands.pdb
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\GuardedCommands.xml
+C:\Users\Helge\git\TreeDrawing\TreeDrawing\bin\Debug\FsLexYacc.Runtime.xml
