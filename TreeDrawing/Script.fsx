@@ -11,6 +11,13 @@ open TreeDrawing.Conversion
 
 System.IO.Directory.SetCurrentDirectory @"C:\Users\Helge\git\GuardedCommands\GuardedCommands\";;
 
-let path = @"C:\Users\Helge\git\TreeDrawing\PostScript.ps"
+let path = @"C:\Users\Helge\git\TreeDrawing\"
 
-writeToFile path (design (convertProgram "QuickSortV2.gc"));;
+let exec prog = writeToFile (path + prog + ".ps") (design (convertProgram (prog + ".gc")));;
+
+#time "on"
+exec "Ex1";;
+exec "A1";;
+exec "par2";;
+exec "QuickSortV2";;
+exec "QuickSortV1";;

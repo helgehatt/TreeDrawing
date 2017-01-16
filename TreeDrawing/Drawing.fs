@@ -28,10 +28,8 @@ module Drawing =
             | []        -> String.concat "" [pointToString (x+d,y-10.0); " moveto"; nl], (x+d,y-10.0), nodeCount-1
             | label::ls -> let (str, newPt, newCount) = aux (x,y-10.0) (ls,d) (nodeCount+1)
                            String.concat "" [
-                                pointToString (x+d,y-10.0);
-                                " moveto"; nl;
-                                "("; string label;
-                                ") dup stringwidth pop 2 div neg 0 rmoveto show"; nl; 
+                                pointToString (x+d,y-10.0); " moveto"; nl;
+                                "("; string label; ") dup stringwidth pop 2 div neg 0 rmoveto show"; nl; 
                                 str], 
                            newPt, newCount
         aux (x,y) (labels,d) 0
@@ -42,15 +40,11 @@ module Drawing =
             | Node(_, x, _)::es -> findMax (max x n) es
         let max = findMax 0.0 subtrees
         String.concat "" [
-            pointToString(x-max,y);
-            " moveto"; nl;
-            pointToString(x+max,y);
-            " lineto"; nl]
+            pointToString(x-max,y); " moveto"; nl;
+            pointToString(x+max,y); " lineto"; nl]
     
     let drawVerticalFromNode (x,y) nodeCount =
-        String.concat "" [
-            pointToString(x,y+NodeToLine + 10.0 * (float nodeCount));
-            " lineto"; nl], 
+        String.concat "" [pointToString(x,y+NodeToLine + 10.0 * (float nodeCount)); " lineto"; nl], 
         (x,y+NodeToLine + 10.0 * (float nodeCount))
     
     let rec drawVerticalFromLine (x,y) = function
@@ -69,6 +63,7 @@ module Drawing =
                    let fromLineStr = drawVerticalFromLine (fromNodePt) subtrees
                    let fromLinePt = fst fromNodePt, snd fromNodePt + LineToNode
                    let (strList, maxList) = List.unzip ( List.map (drawTree fromLinePt (minX, maxX, maxY)) subtrees )
+
                    String.concat "" ([nodeStr; fromNodeStr; horizontalLine; fromLineStr; "stroke"; nl] @ strList),
                    getBounds maxList
                    
