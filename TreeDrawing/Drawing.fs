@@ -63,15 +63,17 @@ module Drawing =
     let createPS tree =
         let (treeStr, (maxX,maxY)) = drawTree (0.0, 0.0) (0.0, 0.0) tree 
 
+        let (x,y) = (max 1400 (roundPoint (2.1 * maxX)), max 1000 (roundPoint (2.1 * maxY)))
+
         let pageSize  = String.concat " " [
                             "<</PageSize["; 
-                            string (max 1400 (roundPoint (2.1 * maxX))); 
-                            string (max 1000 (roundPoint (2.1 * maxY))); 
+                            string x; 
+                            string y; 
                             "]/ImagingBBox null>> setpagedevice"]
 
         let pageTrans = String.concat " " [
-                            string (max  700 (roundPoint maxX)); 
-                            string (max 1000 (roundPoint (2.1 * maxY)));
+                            string (x/2); 
+                            string  y;
                             "translate"]
 
         String.concat nl [
