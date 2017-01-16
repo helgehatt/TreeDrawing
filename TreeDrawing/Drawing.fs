@@ -29,11 +29,11 @@ module Drawing =
         aux (x,y) (labels,d) 0
         
     let drawHorizontal (x,y) subtrees =
-        let rec outliers mini maxi = function
-            | [] ->  (mini, maxi)
-            | Node(_, x, _)::es -> outliers (min x mini) (max x maxi) es
-        let (min,max) = outliers FloatMax FloatMin subtrees
-        pointToString(x+min,y) + " moveto" + nl + 
+        let rec findMax n = function
+            | [] -> n
+            | Node(_, x, _)::es -> findMax (max x n) es
+        let max = findMax FloatMin subtrees
+        pointToString(x-max,y) + " moveto" + nl + 
         pointToString(x+max,y) + " lineto" + nl
     
     let drawVerticalFromNode (x,y) nodeCount =
@@ -47,28 +47,44 @@ module Drawing =
                                drawVerticalFromLine (x,y) es
                                
     
-    let rec drawTree (x,y) (Node(labels,d,subtrees)) =
+    let rec drawTree (x,y) (maxX,maxY) (Node(labels,d,subtrees)) =
         let (nodeStr, nodePt, nodeCount) = drawNode (x,y) (labels,d)
         match subtrees with
-        | []    -> nodeStr
+        | []    -> nodeStr, (maxX,maxY)
         | _     -> let (fromNodeStr, fromNodePt) = drawVerticalFromNode nodePt nodeCount
                    let horizontalLine = drawHorizontal fromNodePt subtrees
                    let fromLineStr = drawVerticalFromLine (fromNodePt) subtrees
                    let fromLinePt = fst fromNodePt, snd fromNodePt + LineToNode
-                   String.concat "" ([nodeStr; fromNodeStr; horizontalLine; fromLineStr; "stroke"; nl]
-                        @ List.map (drawTree fromLinePt) subtrees )
+                   let (strList, maxList) = List.unzip ( List.map (drawTree fromLinePt (max x maxX, max y maxY)) subtrees )
+                   String.concat "" ([nodeStr; fromNodeStr; horizontalLine; fromLineStr; "stroke"; nl] @ strList), 
+                   ( fst (List.maxBy (fun (x,_) -> x) maxList), snd (List.maxBy (fun (_,y) -> y) maxList) )
+                   
     
     let createPS tree =
-       "%!" + nl +
-        "<</PageSize[1400 1000]/ImagingBBox null>> setpagedevice" + nl +
-        "1 1 scale" + nl +
-        "700 500 translate" + nl +
-        "newpath" + nl +
-        "/Times-Roman findfont 10 scalefont setfont" + nl +
-        drawTree (0.0, 0.0) tree + 
-        "showpage"
+        let (treeStr, (maxX,maxY)) = drawTree (0.0, 0.0) (0.0, 0.0) tree 
 
-    let writeToFile tree = 
-        let path = @"C:\Users\Helge\git\TreeDrawing\PostScript.ps"
+        let pageSize  = String.concat " " [
+                            "<</PageSize["; 
+                            string (max 1400 (roundPoint (2.0 * maxX))); 
+                            string (max 1000 (roundPoint (2.0 * maxY))); 
+                            "]/ImagingBBox null>> setpagedevice"]
+
+        let pageTrans = String.concat " " [
+                            string (max  700 (roundPoint maxX)); 
+                            string (max  500 (roundPoint maxY));
+                            "translate"]
+
+        String.concat nl [
+            "%!";
+            pageSize;
+            pageTrans;
+            "1 1 scale"; 
+            "newpath"; 
+            "/Times-Roman findfont 10 scalefont setfont"; 
+            treeStr; 
+            "showpage"]
+        
+
+    let writeToFile path tree = 
         let contents = createPS tree
         File.WriteAllText(path, contents)
