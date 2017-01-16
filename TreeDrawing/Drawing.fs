@@ -11,7 +11,12 @@ module Drawing =
     let NodeToLine = -20.0
     let LineToNode = -40.0
     
-    let pointToString (x,y) = String.concat " " [string x; string y]
+    let roundPoint = function
+    | n when n > 0.0 && n <  1.0 ->  1
+    | n when n < 0.0 && n > -1.0 -> -1
+    | n                          -> int (round n)
+
+    let pointToString (x,y) = String.concat " " [string (roundPoint x); string (roundPoint y)]
     
     let drawNode (x,y) (Node((label,d),subtrees)) =
         pointToString (x+d,y-10.0) + " moveto" + nl +
