@@ -63,7 +63,7 @@ module Drawing =
     let createPS tree =
         let (treeStr, (maxX,maxY)) = drawTree (0.0, 0.0) (0.0, 0.0) tree 
 
-        let (x,y) = (max 1400 (roundPoint (2.1 * maxX)), max 1000 (roundPoint (2.1 * maxY)))
+        let (x,y) = (max 1400 (roundPoint (2.5 * maxX)), max 1000 (roundPoint (2.5 * maxY)))
 
         let pageSize  = String.concat " " [
                             "<</PageSize["; 
