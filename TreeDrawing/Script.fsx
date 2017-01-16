@@ -11,4 +11,8 @@ open TreeDrawing.Conversion
 
 System.IO.Directory.SetCurrentDirectory @"C:\Users\Helge\git\GuardedCommands\GuardedCommands\";;
 
-convertProgram "Ex1.gc";;
+writeToFile (design (convertProgram "Ex1.gc"));;
+
+let (Node(_,subtrees)) = design (convertProgram "Ex1.gc");;
+
+drawHorizontal (0.0,0.0) subtrees;;

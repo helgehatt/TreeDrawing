@@ -18,7 +18,7 @@ module Construction =
     
     let rec fit left right =
         match (left, right) with 
-        | ((_,p)::ps, (q,_)::qs) -> max (fit ps qs) (p - q + 1.0)
+        | ((_,p)::ps, (q,_)::qs) -> max (fit ps qs) (p - q + 40.0)
         | _                        -> 0.0
     
     let fitlistl es =
