@@ -6,8 +6,6 @@ module Drawing =
     open System.IO
 
     let nl = System.Environment.NewLine
-    let FloatMax = System.Double.MaxValue
-    let FloatMin = System.Double.MinValue
     let NodeToLine = -20.0
     let LineToNode = -40.0
     
@@ -32,7 +30,7 @@ module Drawing =
         let rec findMax n = function
             | [] -> n
             | Node(_, x, _)::es -> findMax (max x n) es
-        let max = findMax FloatMin subtrees
+        let max = findMax 0.0 subtrees
         pointToString(x-max,y) + " moveto" + nl + 
         pointToString(x+max,y) + " lineto" + nl
     
@@ -47,23 +45,23 @@ module Drawing =
                                drawVerticalFromLine (x,y) es
                                
     
-    let rec drawTree (x,y) (maxX,maxY) (Node(labels,d,subtrees)) =
+    let rec drawTree (x,y) (minX,maxX,maxY) (Node(labels,d,subtrees)) =
         let (nodeStr, nodePt, nodeCount) = drawNode (x,y) (labels,d)
         match subtrees with
-        | []    -> nodeStr, (maxX,maxY)
+        | []    -> nodeStr, (min x minX, max x maxX, max y maxY)
         | _     -> let (fromNodeStr, fromNodePt) = drawVerticalFromNode nodePt nodeCount
                    let horizontalLine = drawHorizontal fromNodePt subtrees
                    let fromLineStr = drawVerticalFromLine (fromNodePt) subtrees
                    let fromLinePt = fst fromNodePt, snd fromNodePt + LineToNode
-                   let (strList, maxList) = List.unzip ( List.map (drawTree fromLinePt (max x maxX, max y maxY)) subtrees )
-                   String.concat "" ([nodeStr; fromNodeStr; horizontalLine; fromLineStr; "stroke"; nl] @ strList), 
-                   ( fst (List.maxBy (fun (x,_) -> x) maxList), snd (List.maxBy (fun (_,y) -> y) maxList) )
+                   let (strList, maxList) = List.unzip ( List.map (drawTree fromLinePt (minX, maxX, maxY)) subtrees )
+                   String.concat "" ([nodeStr; fromNodeStr; horizontalLine; fromLineStr; "stroke"; nl] @ strList),
+                   (minX, maxX, maxY)
                    
     
     let createPS tree =
-        let (treeStr, (maxX,maxY)) = drawTree (0.0, 0.0) (0.0, 0.0) tree 
+        let (treeStr, (minX, maxX, maxY)) = drawTree (0.0, 0.0) (0.0, 0.0, 0.0) tree 
 
-        let (x,y) = (max 1400 (roundPoint (2.5 * maxX)), max 1000 (roundPoint (2.5 * maxY)))
+        let (x,y) = (max 1400 (roundPoint (2.1 * (max (-minX) maxX)) ), max 1000 (roundPoint (2.1 * maxY)))
 
         let pageSize  = String.concat " " [
                             "<</PageSize["; 
