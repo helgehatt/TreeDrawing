@@ -45,8 +45,9 @@ module Drawing =
         | _     -> let (fromNodeStr, fromNodePt) = drawVerticalFromNode nodePt
                    let horizontalLine = drawHorizontal fromNodePt subtrees
                    let fromLineStr = drawVerticalFromLine (fromNodePt) subtrees
+                   let fromLinePt = fst fromNodePt, snd fromNodePt + LineToNode
                    String.concat "" ([nodeStr; fromNodeStr; horizontalLine; fromLineStr; "stroke"; nl]
-                        @ List.map (drawTree fromNodePt) subtrees )
+                        @ List.map (drawTree fromLinePt) subtrees )
     
     let createPS tree =
        "%!" + nl +
