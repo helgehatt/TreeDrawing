@@ -6,8 +6,8 @@ module Drawing =
     open System.IO
 
     let nl = System.Environment.NewLine
-    let NodeToLine = -20.0
-    let LineToNode = -40.0
+    let NodeToLine = -30.0
+    let LineToNode = -30.0
     
     let roundPoint = function
     | n when n > 0.0 && n <  1.0 ->  1
