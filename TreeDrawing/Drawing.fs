@@ -58,7 +58,7 @@ module Drawing =
        "%!" + nl +
         "<</PageSize[1400 1000]/ImagingBBox null>> setpagedevice" + nl +
         "1 1 scale" + nl +
-        "1399 999 translate" + nl +
+        "700 500 translate" + nl +
         "newpath" + nl +
         "/Times-Roman findfont 10 scalefont setfont" + nl +
         drawTree (0.0, 0.0) tree + 
