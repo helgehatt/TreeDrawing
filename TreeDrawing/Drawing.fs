@@ -25,11 +25,15 @@ module Drawing =
     let drawNode (x,y) (labels,d) = 
         let rec aux (x,y) (labels,d) nodeCount = 
             match labels with
-            | []        -> pointToString (x+d,y-10.0) + " moveto" + nl, (x+d,y-10.0), nodeCount-1
+            | []        -> String.concat "" [pointToString (x+d,y-10.0); " moveto"; nl], (x+d,y-10.0), nodeCount-1
             | label::ls -> let (str, newPt, newCount) = aux (x,y-10.0) (ls,d) (nodeCount+1)
-                           pointToString (x+d,y-10.0) + " moveto" + nl +
-                           "(" + string label + ") dup stringwidth pop 2 div neg 0 rmoveto show" + nl +
-                           str, newPt, newCount
+                           String.concat "" [
+                                pointToString (x+d,y-10.0);
+                                " moveto"; nl;
+                                "("; string label;
+                                ") dup stringwidth pop 2 div neg 0 rmoveto show"; nl; 
+                                str], 
+                           newPt, newCount
         aux (x,y) (labels,d) 0
         
     let drawHorizontal (x,y) subtrees =
@@ -37,19 +41,24 @@ module Drawing =
             | [] -> n
             | Node(_, x, _)::es -> findMax (max x n) es
         let max = findMax 0.0 subtrees
-        pointToString(x-max,y) + " moveto" + nl + 
-        pointToString(x+max,y) + " lineto" + nl
+        String.concat "" [
+            pointToString(x-max,y);
+            " moveto"; nl;
+            pointToString(x+max,y);
+            " lineto"; nl]
     
     let drawVerticalFromNode (x,y) nodeCount =
-        pointToString(x,y+NodeToLine + 10.0 * (float nodeCount)) + " lineto" + nl, 
+        String.concat "" [
+            pointToString(x,y+NodeToLine + 10.0 * (float nodeCount));
+            " lineto"; nl], 
         (x,y+NodeToLine + 10.0 * (float nodeCount))
     
     let rec drawVerticalFromLine (x,y) = function
         | [] -> ""
-        | Node(_,d,_)::es -> pointToString(x+d,y) + " moveto" + nl + 
-                               pointToString(x+d,y+LineToNode) + " lineto" + nl +
-                               drawVerticalFromLine (x,y) es
-                               
+        | Node(_,d,_)::es -> String.concat "" [        
+                                pointToString(x+d,y); " moveto"; nl; 
+                                pointToString(x+d,y+LineToNode); " lineto"; nl;
+                                drawVerticalFromLine (x,y) es]                               
     
     let rec drawTree (x,y) (minX,maxX,maxY) (Node(labels,d,subtrees)) =
         let (nodeStr, nodePt, nodeCount) = drawNode (x,y) (labels,d)
