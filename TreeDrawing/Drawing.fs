@@ -14,6 +14,12 @@ module Drawing =
     | n when n < 0.0 && n > -1.0 -> -1
     | n                          -> int (round n)
 
+    let getBounds bounds = 
+        let rec aux (minX, maxX, maxY) = function
+            | []          -> minX, maxX, maxY
+            | (a,b,c)::xs -> aux (min a minX, max b maxX, max c maxY) xs
+        aux (0.0, 0.0, 0.0) bounds
+
     let pointToString (x,y) = String.concat " " [string (roundPoint x); string (roundPoint y)]
     
     let drawNode (x,y) (labels,d) = 
@@ -55,7 +61,7 @@ module Drawing =
                    let fromLinePt = fst fromNodePt, snd fromNodePt + LineToNode
                    let (strList, maxList) = List.unzip ( List.map (drawTree fromLinePt (minX, maxX, maxY)) subtrees )
                    String.concat "" ([nodeStr; fromNodeStr; horizontalLine; fromLineStr; "stroke"; nl] @ strList),
-                   (minX, maxX, maxY)
+                   getBounds maxList
                    
     
     let createPS tree =
