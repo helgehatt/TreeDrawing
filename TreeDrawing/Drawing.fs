@@ -13,18 +13,18 @@ module Drawing =
     
     let pointToString (x,y) = String.concat " " [string x; string y]
     
-    let drawNode (x,y) (Node((label,_),subtrees)) =
-        pointToString (x,y-10.0) + " moveto" + nl +
+    let drawNode (x,y) (Node((label,d),subtrees)) =
+        pointToString (x+d,y-10.0) + " moveto" + nl +
         "(" + string label + ") dup stringwidth pop 2 div neg 0 rmoveto show" + nl +
-        pointToString (x,y-20.0) + " moveto" + nl,
-        (x,y-20.0)
+        pointToString (x+d,y-20.0) + " moveto" + nl,
+        (x+d,y-20.0)
         
     let drawHorizontal (x,y) subtrees =
         let rec outliers mini maxi = function
             | [] ->  (mini, maxi)
             | Node((_, x), _)::es -> outliers (min x mini) (max x maxi) es
         let (min,max) = outliers FloatMax FloatMin subtrees
-        pointToString(x-min,y) + " moveto" + nl + 
+        pointToString(x+min,y) + " moveto" + nl + 
         pointToString(x+max,y) + " lineto" + nl
     
     let drawVerticalFromNode (x,y) =
