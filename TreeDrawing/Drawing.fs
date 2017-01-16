@@ -76,8 +76,8 @@ module Drawing =
                             "]/ImagingBBox null>> setpagedevice"]
 
         let pageTrans = String.concat " " [
-                            string (x/2); 
-                            string  y;
+                            string (x / 2); 
+                            string (y - 50);
                             "translate"]
 
         String.concat nl [
