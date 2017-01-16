@@ -41,8 +41,8 @@ module Drawing =
         pointToString(x+max,y) + " lineto" + nl
     
     let drawVerticalFromNode (x,y) nodeCount =
-        pointToString(x,y+NodeToLine + 20.0 * (float nodeCount)) + " lineto" + nl, 
-        (x,y+NodeToLine + 20.0 * (float nodeCount))
+        pointToString(x,y+NodeToLine + 10.0 * (float nodeCount)) + " lineto" + nl, 
+        (x,y+NodeToLine + 10.0 * (float nodeCount))
     
     let rec drawVerticalFromLine (x,y) = function
         | [] -> ""
