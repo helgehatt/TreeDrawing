@@ -41,8 +41,8 @@ module Drawing =
         pointToString(x+max,y) + " lineto" + nl
     
     let drawVerticalFromNode (x,y) nodeCount =
-        pointToString(x,y+NodeToLine - 10.0 * (float nodeCount)) + " lineto" + nl, 
-        (x,y+NodeToLine - 10.0 * (float nodeCount))
+        pointToString(x,y+NodeToLine - 20.0 * (float nodeCount)) + " lineto" + nl, 
+        (x,y+NodeToLine - 20.0 * (float nodeCount))
     
     let rec drawVerticalFromLine (x,y) = function
         | [] -> ""
@@ -77,7 +77,7 @@ module Drawing =
 
         let pageTrans = String.concat " " [
                             string (x / 2); 
-                            string (y - 50);
+                            string (y - 20);
                             "translate"]
 
         String.concat nl [
