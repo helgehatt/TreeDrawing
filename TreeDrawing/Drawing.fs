@@ -65,13 +65,13 @@ module Drawing =
 
         let pageSize  = String.concat " " [
                             "<</PageSize["; 
-                            string (max 1400 (roundPoint (2.0 * maxX))); 
-                            string (max 1000 (roundPoint (2.0 * maxY))); 
+                            string (max 1400 (roundPoint (2.1 * maxX))); 
+                            string (max 1000 (roundPoint (2.1 * maxY))); 
                             "]/ImagingBBox null>> setpagedevice"]
 
         let pageTrans = String.concat " " [
                             string (max  700 (roundPoint maxX)); 
-                            string (max  500 (roundPoint maxY));
+                            string (max 1000 (roundPoint (2.1 * maxY)));
                             "translate"]
 
         String.concat nl [
