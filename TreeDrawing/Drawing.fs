@@ -18,36 +18,40 @@ module Drawing =
 
     let pointToString (x,y) = String.concat " " [string (roundPoint x); string (roundPoint y)]
     
-    let drawNode (x,y) (Node((label,d),subtrees)) =
-        pointToString (x+d,y-10.0) + " moveto" + nl +
-        "(" + string label + ") dup stringwidth pop 2 div neg 0 rmoveto show" + nl +
-        pointToString (x+d,y-20.0) + " moveto" + nl,
-        (x+d,y-20.0)
+    let drawNode (x,y) (labels,d) = 
+        let rec aux (x,y) (labels,d) nodeCount = 
+            match labels with
+            | []        -> pointToString (x+d,y-10.0) + " moveto" + nl, (x+d,y-10.0), nodeCount-1
+            | label::ls -> let (str, newPt, newCount) = aux (x,y-10.0) (ls,d) (nodeCount+1)
+                           pointToString (x+d,y-10.0) + " moveto" + nl +
+                           "(" + string label + ") dup stringwidth pop 2 div neg 0 rmoveto show" + nl +
+                           str, newPt, newCount
+        aux (x,y) (labels,d) 0
         
     let drawHorizontal (x,y) subtrees =
         let rec outliers mini maxi = function
             | [] ->  (mini, maxi)
-            | Node((_, x), _)::es -> outliers (min x mini) (max x maxi) es
+            | Node(_, x, _)::es -> outliers (min x mini) (max x maxi) es
         let (min,max) = outliers FloatMax FloatMin subtrees
         pointToString(x+min,y) + " moveto" + nl + 
         pointToString(x+max,y) + " lineto" + nl
     
-    let drawVerticalFromNode (x,y) =
-        pointToString(x,y+NodeToLine) + " lineto" + nl, 
-        (x,y+NodeToLine)
+    let drawVerticalFromNode (x,y) nodeCount =
+        pointToString(x,y+NodeToLine - 10.0 * (float nodeCount)) + " lineto" + nl, 
+        (x,y+NodeToLine - 10.0 * (float nodeCount))
     
     let rec drawVerticalFromLine (x,y) = function
         | [] -> ""
-        | Node((_,d),_)::es -> pointToString(x+d,y) + " moveto" + nl + 
+        | Node(_,d,_)::es -> pointToString(x+d,y) + " moveto" + nl + 
                                pointToString(x+d,y+LineToNode) + " lineto" + nl +
                                drawVerticalFromLine (x,y) es
                                
     
-    let rec drawTree (x,y) (Node((label,d),subtrees)) =
-        let (nodeStr, nodePt) = drawNode (x,y) (Node((label,d),subtrees))
+    let rec drawTree (x,y) (Node(labels,d,subtrees)) =
+        let (nodeStr, nodePt, nodeCount) = drawNode (x,y) (labels,d)
         match subtrees with
         | []    -> nodeStr
-        | _     -> let (fromNodeStr, fromNodePt) = drawVerticalFromNode nodePt
+        | _     -> let (fromNodeStr, fromNodePt) = drawVerticalFromNode nodePt nodeCount
                    let horizontalLine = drawHorizontal fromNodePt subtrees
                    let fromLineStr = drawVerticalFromLine (fromNodePt) subtrees
                    let fromLinePt = fst fromNodePt, snd fromNodePt + LineToNode

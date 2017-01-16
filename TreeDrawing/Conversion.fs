@@ -7,7 +7,8 @@ module Conversion =
     open GuardedCommands.Util.ParserUtil
     open GuardedCommands.Frontend.AST
 
-    let node s ts = Node((s,0.0),ts)
+    let node      s ts = Node([s],0.0,ts)
+    let nodeList es ts = Node(es,0.0,ts)
 
     let typ = function
         | ITyp   -> "ITyp"
@@ -61,7 +62,7 @@ module Conversion =
 
     and CGs = function
         | []            -> []
-        | (e,stms)::gcs -> node "GuardedCommand" (CE e::CSs stms) :: CGs gcs
+        | (e,stms)::gcs -> nodeList ["Guarded"; "Command"] (CE e::CSs stms) :: CGs gcs
 
     let CP (P(decs,stms)) = node "Program" (CDs decs @ CSs stms)
 

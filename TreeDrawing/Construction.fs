@@ -1,12 +1,12 @@
 ﻿namespace TreeDrawing
 
 module Construction =
-    type Tree   = Node of (string * float) * Tree list
+    type Tree   = Node of string list * float * Tree list
     type Extent = (float * float) list
     
     let moveextent e x = List.map (fun (p,q) -> (p+x,q+x)) e
     
-    let movetree (Node((label,x), subtrees)) x' = Node((label, x+x'), subtrees)     
+    let movetree (Node(label,x, subtrees)) x' = Node(label, x+x', subtrees)     
     
     let rec merge left right =
         match (left, right) with
@@ -39,13 +39,13 @@ module Construction =
     
     let fitlist es = List.map2 mean (fitlistl es) (fitlistr es)
     
-    let rec design' (Node((label,_), subtrees)) =
+    let rec design' (Node(label, _, subtrees)) =
         let (trees, extents) = List.unzip (List.map design' subtrees)
         let positions = fitlist extents
         let ptrees = List.map2 movetree trees positions
         let pextents = List.map2 moveextent extents positions
         let resultextent = (0.0, 0.0)::mergelist pextents
-        let resulttree = Node((label,0.0), ptrees)
+        let resulttree = Node(label, 0.0, ptrees)
         (resulttree, resultextent)
         
     let design tree = fst (design' tree)
@@ -55,7 +55,7 @@ module Construction =
         | _, 0 -> []
         | 0, _ -> []
         | m, n -> let subtrees = createSubTree m (n - 1)
-                  [ for i in 0 .. (m-1) -> Node((string (i,n), 0.0), subtrees) ]   
+                  [ for i in 0 .. (m-1) -> Node([string (i,n)], 0.0, subtrees) ]   
                   
     let createTree breadth depth = let subtrees = createSubTree breadth (depth - 1)
-                                   Node(("root",0.0),subtrees)
+                                   Node(["root"], 0.0,subtrees)
