@@ -10,13 +10,6 @@ module Conversion =
     let node      s ts = Node([s],0.0,ts)
     let nodeList es ts = Node(es,0.0,ts)
 
-    let typ = function
-        | ITyp   -> "ITyp"
-        | BTyp   -> "BTyp"
-        | ATyp _ -> "ATyp"
-        | PTyp _ -> "PTyp"
-        | FTyp _ -> "FTyp"
-
     /// CE e gives the code for an expression e on the basis of a variable and a function environment
     let rec CE = 
         function
@@ -35,7 +28,7 @@ module Conversion =
 
 /// CA acc gives the code for an access acc on the basis of a variable and a function environment
     and CA = function 
-        | AVar x        -> node "AVar" [node ("Var " + x) []]
+        | AVar x        -> node "AVar" [node x []]
         | AIndex(acc,e) -> node "AIndex" [CA acc; CE e]
         | ADeref e      -> node "ADeref" [CE e]
                       
@@ -52,13 +45,23 @@ module Conversion =
     and CSs stms = List.map CS stms 
 
     and CD = function
-        | VarDec(t,s)                -> node "VarDec" [node s []; node (typ t) []]
+        | VarDec(t,s)                -> node "VarDec" [node s []; CT t]
         | FunDec(topt, s, decs, stm) -> node "FunDec" (node s [] :: 
                                             match topt with
-                                            | Some t -> node (typ t) [] :: CDs decs @ [CS stm]
-                                            | None   ->                    CDs decs @ [CS stm])
+                                            | Some t -> CT t :: CDs decs @ [CS stm]
+                                            | None   ->         CDs decs @ [CS stm])
 
     and CDs decs = List.map CD decs
+
+    and CT = function
+        | ITyp          -> node "ITyp" []
+        | BTyp          -> node "BTyp" []
+        | ATyp (t,_)    -> node "ATyp" [CT t]
+        | PTyp t        -> node "PTyp" [CT t]
+        | FTyp (_,topt) -> node "FTyp" (
+                               match topt with
+                               | Some t -> [CT t]
+                               | None   -> [])
 
     and CGs = function
         | []            -> []
